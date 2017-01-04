@@ -87,21 +87,21 @@ parts:
         - libmemcached-dev
         - libpgpool-dev
         - postgresql-server-dev-9.6
+        - libpam0g-dev
     #stage-packages:
     #    - libpgpool0
-  pgpool-adm:
-    plugin: make
-    source: parts/pgpool/build/src/
-    source-subdir: sql/pgpool_adm/
-    after: 
-      - pgpool
-  pgpool-recovery:
-    plugin: make
-    source: parts/pgpool/build/src/sql/pgpool-recovery/
-    after: 
-      - pgpool
-  pgpool-regclass:
-    plugin: make
-    source: parts/pgpool/build/src/sql/pgpool-regclass/
-    after: 
-      - pgpool
+    install: |
+        base=$(pwd)
+
+        # Build pgpool-adm
+        cd $base/src/sql/pgpool_adm
+        make && make install DESTDIR=$SNAPCRAFT_PART_INSTALL
+
+        # Build pgpool-recovery
+        cd $base/src/sql/pgpool-recovery
+        make && make install DESTDIR=$SNAPCRAFT_PART_INSTALL
+
+        # Build pgpool-regclass
+        cd $base/src/sql/pgpool-regclass
+        make && make install DESTDIR=$SNAPCRAFT_PART_INSTALL
+
